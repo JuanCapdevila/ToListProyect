@@ -1,0 +1,63 @@
+{% load static %}
+
+<html lang="es">
+<head>
+
+  {% include "menu/includes/urls.html" %}
+
+  <title>To List - Iniciar sesión</title>
+
+
+  <link rel="stylesheet" href="{% static 'proyecto/css/login.css' %}"/>
+
+</head>
+
+<body>
+
+  <div class="main"> 
+    <div class="container">
+      <center>
+        <div class="middle mt-5">
+          <div id="login">
+            {% csrf_token %}
+            <form  id="login-form" action="{% url 'login' %}" method="post">
+
+              <fieldset class="clearfix">
+                <p><span class="fa fa-user"></span><input type="text" name="username" Placeholder="Username" required></p> <!-- JS because of IE support; better: placeholder="Username" -->
+                <p><span class="fa fa-lock"></span><input type="password" name="password" Placeholder="Password" required></p> <!-- JS because of IE support; better: placeholder="Password" -->
+                
+                  <div>
+                    <span style="width:48%; text-align:left;  display: inline-block;"><a class="small-text" href="#">Crear cuenta</a></span>
+                    <span style="width:50%; text-align:right;  display: inline-block;"><input type="submit" value="Iniciar Sesión"></span>
+                  </div>
+              </fieldset>
+            
+              <div class="clearfix"></div>
+            
+            </form>
+            
+            <div class="clearfix"></div>
+          </div> <!-- end login -->
+          <div class="logo">
+            <img style="max-width:50%; position:relative; margin-bottom:150px" src="{% static 'images/tolist_image.jpg' %}"></img>  
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </center>
+    </div>
+  </div>
+
+</body>
+
+
+
+</html>
+
+<script>
+
+  {%for m in messages %}
+      toastr.error('{{ m }}', ' ', {timeOut: 1500})
+  {%endfor %}
+
+</script>
+
