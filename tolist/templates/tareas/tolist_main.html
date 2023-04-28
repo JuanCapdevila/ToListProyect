@@ -1,0 +1,152 @@
+<section class="content mt-5" id="seccion_tolist">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-clipboard-list"></i> To Do List
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="result_tabla_tareas">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button style="float:right" class="btn btn-primary mb-2" id="btnAgregarTarea" onclick="agregarTarea()">Cargar Tarea</button>
+            </div>
+          </div>
+        </div>
+      </div>      
+</section>
+
+<div class="modal" id="modalNuevaTarea">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="modal-title">
+           <b> Crear tarea nueva </b>
+          </p>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+                <div id="result_filtros">
+                    {% include 'tareas/_inputs.html' %}
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-secondary pull-left" onclick="cerrarModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary pull-rigth" onclick="crearTarea()">Aceptar</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        cargarTareas();
+    });
+
+    function cargarTareas()
+    {
+        $.ajax({
+            url: "{% url 'tolist:cargar_tareas'%}",
+            type: "post",
+            headers: {'X-CSRFToken':'{{ csrf_token}}'},
+            datatype: 'json',
+            statusCode: {
+                200:function(data){
+                    console.log(data)
+                    $('#result_tabla_tareas').html(data);
+
+                },
+                500:function(){
+                toastr.error('Error al cargar las tareas. Comunicarse con un administrador', 'Atención', {timeOut: 2000});
+                }
+            }
+        });
+    }
+
+    function agregarTarea()
+    {
+        $.ajax({
+            url: "{% url 'tolist:cargar_filtros'%}",
+            type: "post",
+            headers: {'X-CSRFToken':'{{ csrf_token}}'},
+            datatype: 'json',
+            statusCode: {
+                200:function(data){
+
+                    $('#result_filtros').html(data);
+                    $('#modalNuevaTarea').modal("show");
+
+                },
+                500:function(){
+                toastr.error('Error al cargar filtros. Comunicarse con administrador.', 'Atención', {timeOut: 2000});
+                }
+            }
+        });
+    }
+
+    function cerrarModal()
+    {
+        $('#modalNuevaTarea').modal("hide");
+    }
+
+    function crearTarea()
+    {
+        let datos = {}
+
+        datos.descripcion = $('#txtDescripcion').val();
+        datos.prioridad = $('#lstPrioridades').val();
+        datos.categoria = $('#lstCategoria').val(); 
+        datos.fechaLimite = $('#txtFechaLimite').val();
+
+        if (datos.descripcion && datos.prioridad && datos.categoria)
+        {
+            $.ajax({
+                url: "{% url 'tolist:crear_tarea'%}",
+                type: "post",
+                headers: {'X-CSRFToken':'{{ csrf_token}}'},
+                datatype: 'json',
+                data:datos,
+                statusCode: {
+                    200:function(data){
+
+                        $('#modalNuevaTarea').modal("hide");
+
+                        toastr.success('Tarea creada correctamente', 'Éxito', {timeOut: 2000});
+    
+                    },
+                    500:function(){
+                    toastr.error('Error al crear tarea. Comunicarse con un administrador', 'Atención', {timeOut: 2000});
+                    }
+                }
+            }).then(function () {
+
+                cargarTareas();
+
+            });
+        }
+        else
+        {
+            toastr.info('Por favor complete todos los campos', 'Atención', {timeOut: 2000});
+        }
+    }
+
+</script>

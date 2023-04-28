@@ -1,0 +1,78 @@
+{% load i18n %}
+
+<style>
+  #tabla_tareas tbody tr.selected {
+      color: white;
+      background-color: #B1BFBF;
+  }
+</style>
+
+<section class="content">
+  <table id="tabla_tareas" class="table table-bordered"  style="width:100%">
+      <thead>
+        <tr>
+            <th>Orden</th>
+            <th style="display: none;">id</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Tarea</th>
+            <th>Categoria</th>
+            <th>Fecha Limite</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tareas %} 
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td style="display: none;">{{t.pk}}</td>
+                    <td class="text-center"><input type="checkbox" onclick="finalizarTarea()"></td>
+                    <td style="cursor: n-resize;" class="text-cyan">{{t.descripcion}}</td>
+                    {% if t.id_prioridad.descripcion == "Media" %}
+                        <td style="background-color:#E7E73D">{{t.id_prioridad.descripcion}}</td>
+                    {% elif t.id_prioridad.descripcion == "Baja" %}
+                        <td style="background-color:#567FEC">{{t.id_prioridad.descripcion}}</td>
+                    {% elif t.id_prioridad.descripcion == "Alta" %}
+                        <td style="background-color:#F14747">{{t.id_prioridad.descripcion}}</td>
+                    {% endif %}
+                    <td>{{t.id_categoria.descripcion}}</td>
+                    <td>{{t.fecha_limite|date:'d/m/Y'|default_if_none:'-'}}</td>
+                </tr>
+        {% endfor %}
+      </tbody>
+  </table>
+</section>
+
+<script>
+
+  var tabla_tareas = $('#tabla_tareas').DataTable({
+      language: datatable_es,
+      paging: true,
+      searching: true,
+      ordering: true,
+      info: true,
+      autoWidth: true,
+      scrollX: true,
+      rowReorder: true,
+      scrollY:200,
+      columnDefs: [
+        { visible: false,  searchable: false, targets: 1 },
+        { orderable: true, className: 'reorder', "width": "5%", targets: 0 },
+        { orderable: true, targets: 3},
+      ],
+      preDrawCallback: function (settings) {
+        var api = new $.fn.dataTable.Api(settings);
+        var pagination = $(this)
+
+        .closest('.dataTables_wrapper')
+        .find('.dataTables_paginate');
+
+        if (api.page.info().pages <= 1) {
+          pagination.hide();
+        }
+        else {
+          pagination.show();
+        }
+      }
+  });
+        
+</script>
