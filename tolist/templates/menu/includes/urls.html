@@ -3,9 +3,27 @@
 <html lang="en">
 <head> 
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free-6.2.1/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free-6.2.1/css/brands.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free-6.2.1/css/solid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free-6.2.1/css/regular.min.css' %}">
 
+    <!-- Spinner -->
+    <link rel="stylesheet" href="{% static 'proyecto/css/spinner.css' %}"/>
+
+    <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-5/css/bootstrap.min.css' %}"/>
 
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}"/>
+
+    <!-- DataTable -->
+    <link rel="stylesheet" href="{% static 'plugins/datatables/css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-rowreorder/css/rowReorder.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-select/css/select.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-fixedcolumns/css/fixedColumns.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
 
 </head>
 
@@ -14,7 +32,39 @@
     
     {% block scripts %}
 
+    <!-- Jquery -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap 5 -->
     <script src="{% static 'plugins/bootstrap-5/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Toastr -->
+    <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+
+    <!-- DataTable -->
+    <script src="{% static 'plugins/datatables/js/jquery.dataTables.min.js' %}"></script>
+
+    <script src="{% static 'plugins/datatables/js/dataTables.bootstrap5.min.js' %}"></script>
+
+    <script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-buttons/js/buttons.print.js' %}"></script>
+    
+    <script src="{% static 'plugins/datatables-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-select/js/select.bootstrap4.min.js' %}"></script>
+
+    <script src="{% static 'plugins/datatables-rowgroup/js/dataTables.rowGroup.min.js' %}"></script>
+
+    <script src="{% static 'plugins/datatables-rowreorder/js/dataTables.rowReorder.min.js' %}"></script>
+
+    <script src="{% static 'plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.min.js' %}"></script>
+
+    <script src="{% static 'plugins/datatables-scroller/js/scroller.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-scroller/js/dataTables.scroller.min.js' %}"></script>
+
+    <script src="{% static 'proyecto/js/datatable.js' %}"></script>
 
     {% endblock %}
 

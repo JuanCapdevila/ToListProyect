@@ -1,14 +1,20 @@
-from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.contrib import messages
 
 import logging
 
-log = logging.getLogger("admMedical")
+from challenge_tolist.settings import LOGIN_PAGE, LOGIN_OK
+from controllers import tolist_controller
+from tolist.models import *
+
+_log = logging.getLogger("admMedical")
 
 
 # Create your views here.
@@ -31,30 +37,28 @@ def log_in(request):
                 user = User.objects.get(username=username)
             
             except Exception as e:
-                log.error(str(e))
+                _log.error(str(e))
                 
                 messages.add_message(request, messages.ERROR, "Usuario y/o contraseña incorrecta")
                 
-                return render (request ,'login/login.html', context.flatten())
-                return HttpResponse(status=300)
+                return render (request , LOGIN_PAGE, context.flatten())
             
             user = authenticate(username=username,password=password)
             
             if user:
                 
                 if user.is_authenticated:
-                    login(request, user)
-                
-                    user = User.username
-                    messages.add_message(request, messages.SUCCESS, "Bienvenido {}".format(user))
                     
-                    return HttpResponse(status=200)
+                    login(request, user)
+                    messages.add_message(request, messages.SUCCESS, f"Bienvenido {username}")
+                    
+                    return redirect(LOGIN_OK)
                 
                 else:
                     messages.add_message(request, messages.ERROR, "Error con el usuario. Comunicarse con administrador")
                     return HttpResponse(status=302)
     
-    return render (request,'login/login.html', context.flatten())
+    return render (request, LOGIN_PAGE, context.flatten())
 
 @csrf_exempt
 def log_out(request):
@@ -65,4 +69,132 @@ def log_out(request):
     
     messages.add_message(request, messages.SUCCESS, 'Sesión finalizada')
 
-    return HttpResponse(status=200)
+    return redirect("/proyect/")
+
+
+def index(request):
+    
+    try:
+        result = {}
+        
+        return render (request, 'menu/includes/base.html', result)
+        
+    except Exception as e:
+        _log.error(str(e))
+        return HttpResponse(status=500)
+    
+    
+def crear_cuenta(request):
+    
+    try:
+        _nombre = request.POST['username']
+        _password = request.POST['password']
+        _email = request.POST['email']
+        
+        _existe_email = User.objects.filter(email = _email).count()
+
+        if _existe_email.__eq__(1):
+            
+            return HttpResponse(status=300)
+                            
+        try:
+            
+            User.objects.create_user(username=_nombre, 
+                                    is_active=1,
+                                    email=_email,
+                                    password=_password)
+            
+        except Exception as e:
+            return HttpResponse(status=500)
+        
+        return HttpResponse(status=200)
+        
+    except Exception as e:
+        _log.error(f"Error al crear cuenta. {str(e)}")
+        return HttpResponse(status=500)
+    
+@login_required(login_url=LOGIN_PAGE)
+def tareas_main(request):
+    
+    _pagina = 'tareas/tolist_main.html'
+    
+    try:
+        _result = {}
+        
+        return render (request, _pagina, _result)
+        
+    except Exception as e:
+        _log.error(str(e))
+        return HttpResponse(status=500)
+    
+
+@login_required(login_url=LOGIN_PAGE)
+def cargar_tareas(request):
+    
+    _pagina = 'tareas/_tabla_tareas.html'
+    
+    try:
+        user = request.user
+        
+        _lst_tareas = Tareas.objects.filter(id_user = user.pk)
+        
+        _fecha_hoy = datetime.today()
+        
+        _result = {
+            'tareas': _lst_tareas,
+            'fecha_hoy': _fecha_hoy
+        }
+        
+        return render (request, _pagina, _result)
+        
+    except Exception as e:
+        _log.error(f"Error al cargar las tareas del usuario. {str(e)}")
+        return HttpResponse(status=500)
+    
+    
+@login_required(login_url=LOGIN_PAGE)
+def cargar_filtros(request):
+    
+    _pagina = 'tareas/_inputs.html'
+        
+    try:
+        
+        _prioridades = Prioridades.objects.all()
+        _categorias = Categorias.objects.all()
+
+        _result = {
+            'categorias': _categorias,
+            'prioridades': _prioridades
+        }
+        
+        return render (request, _pagina, _result)
+        
+    except Exception as e:
+        _log.error(f"Error al cargar filtros. {str(e)}")
+        return HttpResponse(status=500)
+    
+    
+@login_required(login_url=LOGIN_PAGE)
+def crear_tarea(request):
+            
+    try:
+        
+        _descripcion = request.POST['descripcion']
+        _prioridad = request.POST['prioridad']
+        _categoria = request.POST['categoria']
+        _fh_limite = request.POST['fechaLimite']
+        _user = request.user
+    
+        _result = tolist_controller.crear_tarea(_descripcion, _prioridad, _categoria, _fh_limite, _user)
+        
+        if _result.find("Error").__eq__(0):
+            
+            return HttpResponse(status=500)
+        
+        else:
+
+            return HttpResponse(status=200)
+        
+    except Exception as e:
+        _log.error(f"Error al crear tarea. {str(e)}")
+        return HttpResponse(status=500)

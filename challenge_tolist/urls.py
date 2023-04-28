@@ -17,11 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from tolist.views import log_in
+from tolist.views import log_in, log_out
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', log_in, name="login"),
-    path('tolist/principal', include(('tolist.urls', 'tolist')), name="tolist"),
+    path('proyect/', log_in, name="login"),
+    path('proyect/tolist/', include(('tolist.urls', 'tolist')), name="tolist"),
     
 ]

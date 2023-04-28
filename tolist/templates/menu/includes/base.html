@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-
 {% load static %}
 {% include "menu/includes/urls.html" %}
 
 <html lang="es-ar">
 
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
+<body style="background-color:#BACDCD;">
 
     <div class="wrapper">
 
         {% include "menu/includes/navbar.html" %}
-        {% include "menu/includes/sidebar.html" %}
         
         <div id="container" class="content-wrapper">
 
             <div class="d-flex justify-content-center">
-                <img src="{% static 'images/logoQorder.png' %}" style="width: 500px; margin-top:200px" alt="what image shows">
+                <img src="{% static 'images/tolist_image.jpg' %}" style="max-width:40%; margin-top:100px; filter: blur(0.1rem); border-radius: 5px;">
             </div>
         
         </div>
@@ -29,40 +26,20 @@
 
 <script>
 
-    //Expiracion de sesion
-    var logOutFlag = true;
-    var minutos= {{minutos_inactivos}};
-    var time_out_value= minutos*60*1000;
-    var time_out_session = null;
-
-    function startTimeout(){
-        time_out_session = window.setTimeout(function(){;window.location.href="{% url 'qaccess:logout' %}";}, time_out_value);
-    }
-
-    $(document).on('click','body', function() {
-        logOutFlag = false;
-        restartTimeout();
-    });
-
-    function restartTimeout(){
-        clearTimeout(time_out_session);
-        startTimeout();
-    }
-
-    startTimeout();
-
     //Redireccionamiento
     function getPage(url)
     {window.location.href
     $( "#container" ).load( url );
     }
     
-    //Mensajes login/logut
-    {%for m in messages %}
-        toastr.success('{{ m }}', ' ', {timeOut: 1500})
-    {%endfor %}
+    //Mensajes login
+    {% for m in messages %}
 
-    //Spinner 
+        toastr.success('{{ m }}', ' ', {timeOut: 1500})
+
+    {% endfor %}
+
+    //Spinner
     $(document).ajaxStart(function() {
         $('#loading').show();
     });

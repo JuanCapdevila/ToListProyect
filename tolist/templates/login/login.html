@@ -12,51 +12,185 @@
 
 </head>
 
-<body>
+<body class="background-radial-gradient">
 
-  <div class="main"> 
-    <div class="container">
-      <center>
-        <div class="middle mt-5">
-          <div id="login">
-            {% csrf_token %}
-            <form  id="login-form" action="{% url 'login' %}" method="post">
-
-              <fieldset class="clearfix">
-                <p><span class="fa fa-user"></span><input type="text" name="username" Placeholder="Username" required></p> <!-- JS because of IE support; better: placeholder="Username" -->
-                <p><span class="fa fa-lock"></span><input type="password" name="password" Placeholder="Password" required></p> <!-- JS because of IE support; better: placeholder="Password" -->
+  <section>
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+      <div class="row gx-lg-5 align-items-center mb-5">
+        <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
+          <h1 class="my-5 display-5 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
+            To Do List <br />
+            <span style="color: hsl(218, 81%, 75%)">para tu dia a dia</span>
+          </h1>
+          <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%)">
+            To Do List generado con Python y Django, eficiente, practico y super entendible 
+            para el usuario. <br>
+            Organizar la agenda nunca fue tan facil
+          </p>
+        </div>
+  
+        <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+          <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+          <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+  
+          <div class="card bg-glass">
+            <div class="card-body px-4 py-4 px-md-4">
+              {% csrf_token %}
+              <form  id="login-form" action="{% url 'login' %}" method="post">
                 
-                  <div>
-                    <span style="width:48%; text-align:left;  display: inline-block;"><a class="small-text" href="#">Crear cuenta</a></span>
-                    <span style="width:50%; text-align:right;  display: inline-block;"><input type="submit" value="Iniciar Sesión"></span>
+                <div id="seccionLogin">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-outline">
+                        <label class="form-label" for="username">Nombre</label>
+                        <input type="text" id="username" class="form-control" name="username"/>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="form-outline mb-3">
+                        <label class="form-label" name="password" for="password">Contraseña</label>
+                        <input type="password" name="password" class="form-control" />
+                      </div>
+                    </div>
                   </div>
-              </fieldset>
+                </div> 
+
+                <section class="content" id="seccionCrearCuenta" style="display:none">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="form-outline">
+                        <label class="form-label">Nombre*</label>
+                        <input type="text" id="txtNombre" class="form-control"/>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="form-outline mb-3">
+                        <label class="form-label" for="password">Contraseña*</label>
+                        <input type="password" id="txtPassword" class="form-control"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-outline">
+                      <label class="form-label" for="email" placeholder="correo electronico">Correo Electronico*</label>
+                      <input type="email" id="txtEmail" class="form-control"/>
+                    </div>
+                  </div>  
+                </section> 
             
-              <div class="clearfix"></div>
-            
-            </form>
-            
-            <div class="clearfix"></div>
-          </div> <!-- end login -->
-          <div class="logo">
-            <img style="max-width:50%; position:relative; margin-bottom:150px" src="{% static 'images/tolist_image.jpg' %}"></img>  
-            <div class="clearfix"></div>
+                <!-- Botones -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <button type="submit" id="btnIniciarSesion" class="btn btn-primary btn-block">
+                      Iniciar Sesión
+                    </button>
+                  </div>
+                  <div class="col-md-2"></div>
+                  <div class="col-md-4">
+                    <button type="button" id="btnCrearCuenta" onclick="crearCuenta()" class="btn btn-primary btn-block pull-right">
+                      Crear Cuenta
+                    </button>
+                  </div>
+                  <div  id="btnCrear" style="display:none">
+                    <div class="row" >
+                      <div class="col-md-6 mt-4">
+                        <button type="button" id="btnCrearCta" onclick="crear()" class="btn btn-primary btn-block">
+                          Crear
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mt-1">
+                        <button type="button" id="btnCancelarCreacion" title="Cancelar" onclick="cancelarCreacion()" class="btn btn-primary btn-block">
+                          <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>     
+
+              </form>
+            </div>
           </div>
         </div>
-      </center>
+      </div>
     </div>
-  </div>
-
+  </section>
+  
 </body>
-
-
-
 </html>
 
 <script>
 
+  //Desactivar autocomplete en inputs
+  $(document).on( 'focus', ':input', function(){
+      $( this ).attr( 'autocomplete', 'off' );
+  });
+
+  function crearCuenta()
+  { 
+    $("#seccionLogin").css("display", "none");
+    $("#btnCrearCuenta").css("display", "none");
+    $("#btnIniciarSesion").css("display", "none");
+
+    $("#btnCrear").css("display", "block");
+    $("#seccionCrearCuenta").css("display", "block");
+  }
+
+  function cancelarCreacion()
+  {
+    $("#seccionLogin").css("display", "block");
+    $("#btnCrearCuenta").css("display", "block");
+    $("#btnIniciarSesion").css("display", "block");
+
+    $("#btnCrear").css("display", "none");
+    $("#seccionCrearCuenta").css("display", "none");
+  }
+
+  function crear()
+  {
+    var datos = {}
+
+    datos.username = $('#txtNombre').val();
+    datos.password = $('#txtPassword').val();
+    datos.email = $('#txtEmail').val();
+  
+    if(datos.email && datos.password && datos.username)
+    {
+      $.ajax({
+          url: "{% url 'tolist:crear_cuenta'%}",
+          type: "post",
+          headers: {'X-CSRFToken':'{{ csrf_token}}'},
+          datatype: 'json',
+          data: datos,
+          statusCode: {
+          200:function(data){
+            toastr.success('Usuario creado correctamente. Ya puede iniciar sesión', 'Información', {timeOut: 2000});
+
+            $("#seccionLogin").css("display", "block");
+            $("#btnCrearCuenta").css("display", "block");
+            $("#btnIniciarSesion").css("display", "block");
+        
+            $("#btnCrear").css("display", "none");
+            $("#seccionCrearCuenta").css("display", "none");
+          },
+          300:function(data){
+            toastr.info('Ya existe un usuario registrado con el correo electronico ingresado.', 'Atención', {timeOut: 2000});
+          },
+          500:function(data){
+            toastr.error('Error con el usuario. Comunicarse con administrador.', 'Atención', {timeOut: 2000});
+          },
+        }
+      });
+    }
+    else
+    {
+      toastr.info('Por favor complete todos los campos.', 'Atención', {timeOut: 2000});
+    }
+  }
+
   {%for m in messages %}
-      toastr.error('{{ m }}', ' ', {timeOut: 1500})
+      toastr.info('{{ m }}', ' ', {timeOut: 1500})
   {%endfor %}
 
 </script>

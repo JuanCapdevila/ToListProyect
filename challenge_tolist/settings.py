@@ -70,8 +70,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'challenge_tolist.wsgi.application'
 
-LOGIN_PAGE = '/MedicalAdmin/'
-LOGIN_OK = 'AdministracionMedica/'
+LOGIN_PAGE = 'login/login.html'
+LOGIN_OK = 'tolist/'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
