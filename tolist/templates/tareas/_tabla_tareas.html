@@ -1,41 +1,59 @@
-{% load i18n %}
-
 <section class="content">
   <table id="tabla_tareas" class="table table-bordered"  style="width:100%">
-      <thead>
-        <tr>
-            <th>Orden</th>
-            <th style="display: none;">id</th>
-            <th>Estado</th>
-            <th>Prioridad</th>
-            <th>Tarea</th>
-            <th>Categoria</th>
-            <th>Fecha Limite</th>
-            <th>Modificar</th>
-            <th>Eliminar</th>
+    <thead>
+      <tr>
+        <th>Orden</th>
+        <th style="display: none;">id</th>
+        <th>Estado</th>
+        <th>Prioridad</th>
+        <th>Tarea</th>
+        <th>Categoria</th>
+        <th>Fecha Limite</th>
+        <th>Modificar</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tareas %}
+        {% if t.estado == 0 %}
+          <tr style="background-color:lightgreen; text-decoration: line-through">
+              <td>{{forloop.counter}}</td>
+              <td style="display: none;">{{t.pk}}</td>
+              <td class="text-center"><input type="checkbox" checked></td>
+              <td style="cursor: n-resize;" class="text-cyan">{{t.descripcion}}</td>
+              {% if t.id_prioridad.descripcion == "Media" %}
+                  <td id="tableDescripcion" style="background-color:#E7E73D">{{t.id_prioridad.descripcion}}</td>
+              {% elif t.id_prioridad.descripcion == "Baja" %}
+                  <td id="tableDescripcion" style="background-color:#567FEC">{{t.id_prioridad.descripcion}}</td>
+              {% elif t.id_prioridad.descripcion == "Alta" %}
+                  <td id="tableDescripcion" style="background-color:#F14747">{{t.id_prioridad.descripcion}}</td>
+              {% endif %}
+              <td>{{t.id_categoria.descripcion}}</td>
+              <td>{{t.fecha_limite|date:'d/m/Y'|default_if_none:'-'}}</td>
+              <td class="text-center"><i class="fa-solid fa-pencil"></i></td>
+              <td class="text-center"><i class="fa-solid fa-trash"></i></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td style="display: none;">{{t.pk}}</td>
+            <td class="text-center"><input type="checkbox"></td>
+            <td style="cursor: n-resize;" class="text-cyan">{{t.descripcion}}</td>
+            {% if t.id_prioridad.descripcion == "Media" %}
+                <td id="tableDescripcion" style="background-color:#E7E73D">{{t.id_prioridad.descripcion}}</td>
+            {% elif t.id_prioridad.descripcion == "Baja" %}
+                <td id="tableDescripcion" style="background-color:#567FEC">{{t.id_prioridad.descripcion}}</td>
+            {% elif t.id_prioridad.descripcion == "Alta" %}
+                <td id="tableDescripcion" style="background-color:#F14747">{{t.id_prioridad.descripcion}}</td>
+            {% endif %}
+            <td>{{t.id_categoria.descripcion}}</td>
+            <td>{{t.fecha_limite|date:'d/m/Y'|default_if_none:'-'}}</td>
+            <td class="text-center"><i class="fa-solid fa-pencil"></i></td>
+            <td class="text-center"><i class="fa-solid fa-trash"></i></td>
         </tr>
-      </thead>
-      <tbody>
-        {% for t in tareas %} 
-                <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td style="display: none;">{{t.pk}}</td>
-                    <td class="text-center"><input type="checkbox" onclick="finalizarTarea()"></td>
-                    <td style="cursor: n-resize;" class="text-cyan">{{t.descripcion}}</td>
-                    {% if t.id_prioridad.descripcion == "Media" %}
-                        <td style="background-color:#E7E73D">{{t.id_prioridad.descripcion}}</td>
-                    {% elif t.id_prioridad.descripcion == "Baja" %}
-                        <td style="background-color:#567FEC">{{t.id_prioridad.descripcion}}</td>
-                    {% elif t.id_prioridad.descripcion == "Alta" %}
-                        <td style="background-color:#F14747">{{t.id_prioridad.descripcion}}</td>
-                    {% endif %}
-                    <td>{{t.id_categoria.descripcion}}</td>
-                    <td>{{t.fecha_limite|date:'d/m/Y'|default_if_none:'-'}}</td>
-                    <td class="text-center"><i class="fa-solid fa-pencil"></i></td>
-                    <td class="text-center"><i class="fa-solid fa-trash"></i></td>
-                </tr>
-        {% endfor %}
-      </tbody>
+        {% endif %}
+      {% endfor %}
+    </tbody>
   </table>
 </section>
 
@@ -72,18 +90,26 @@
       }
   });
 
-  $('#tabla_tareas tbody').on( 'click', 'td', function () {  // CUANDO HACEMOS CLICK EN LA TABLA
+  $('#tabla_tareas tbody').on( 'click', 'td', function () {
 
     var rowIdx = tabla_tareas.cell( this ).index().row;
     var colIdx = tabla_tareas.cell(this).index().column;
-    var pk_tarea = tabla_tareas.rows( rowIdx ).data()[0][1] ;
-    var descripcion = tabla_tareas.rows( rowIdx ).data()[0][3] ;
-    
-    if(colIdx==7){ 
-        editarTarea(pk_tarea);
+    var pk_tarea = tabla_tareas.rows( rowIdx ).data()[0][1];
+    var descripcion = tabla_tareas.rows( rowIdx ).data()[0][3];
+
+    if(colIdx==7)
+    { 
+      editarTarea(pk_tarea);
     }
-    else if(colIdx==8){ 
-        preguntaEliminar(pk_tarea, descripcion);
+    else if(colIdx==8)
+    { 
+      preguntaEliminar(pk_tarea, descripcion);
+    }
+    else if(colIdx==2)
+    { 
+      var check = this.querySelector('input[type="checkbox"]').checked;
+      
+      finalizarTarea(pk_tarea, check);
     }
 
   });

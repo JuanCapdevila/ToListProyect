@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import datetime
 import os
 from pathlib import Path
 
@@ -125,6 +126,55 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# LOGS
+
+aniomes = datetime.today().strftime('%Y%m')
+dia = datetime.today().strftime('%d')
+
+PATH_LOG_BASE = "c:\\"
+
+PATH_LOG_MES = os.path.join(PATH_LOG_BASE, aniomes)
+
+if not os.path.exists(PATH_LOG_MES):
+    os.mkdir(PATH_LOG_MES)
+    
+PATH_LOG_DIA = os.path.join(PATH_LOG_MES, f"ToList_{dia}_log.txt")
+
+if not os.path.exists(PATH_LOG_DIA):
+    open(PATH_LOG_DIA, "w").close()
+        
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': "%(asctime)-15s %(levelname)-3s - %(message)s",
+            'datefmt': "%Y/%m/%d %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': PATH_LOG_DIA,
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 10,
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'tolist': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
+    },
+}
 
 
 

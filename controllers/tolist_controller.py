@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from tolist.models import *
 
-_log = logging.getLogger("admMedical")
+_log = logging.getLogger("tolist")
 
 def crear_tarea(_descripcion, _prioridad, _categoria, _fh_limite, _user):
     
@@ -40,6 +40,7 @@ def crear_tarea(_descripcion, _prioridad, _categoria, _fh_limite, _user):
                                 fecha_limite = _fh_limite,
                                 id_user = _user)
         
+        _log.info(f"Tarea creada con exito. {_descripcion}")
         _resultado = "Tarea creada con exito"
             
     except Exception as e:
@@ -94,11 +95,50 @@ def editar_tarea(_pk, _descripcion, _prioridad, _categoria, _fh_limite):
         _instancia_tarea.fecha_limite =  _fh_limite
         _instancia_tarea.save()
         
+        _log.info(f"Tarea modificada con exito. {_descripcion}")
         _resultado = "Modificacion realizada correctamente"
             
     except Exception as e:
         _log.error(f"Error al modificar la tarea. {str(e)}")
         _resultado = f"Error al modificar la tarea. {str(e)}"
+        return _resultado
+
+    return _resultado
+
+
+def actualizar_estado_tarea(_pk_tarea, _check):
+    
+    _resultado = None
+    
+    try:
+          
+        #Obtenemos la instancia a actualizar
+        try:
+            
+            _instancia_tarea = Tareas.objects.get(pk = _pk_tarea)
+            
+        except Exception as e:
+            _log.error(f"Error al obtener la instancia de tarea en actualizar tarea. {str(e)}")
+            _resultado = f"Error al obtener la instancia de tarea en actualizar tarea. {str(e)}"
+            return _resultado
+        
+        if int(_check).__eq__(1):
+            
+            _instancia_tarea.estado = 0
+            
+        else:
+            
+            _instancia_tarea.estado = 1
+        
+
+        _instancia_tarea.save()
+    
+        _log.info(f"Tarea actualizada con exito. {_instancia_tarea.descripcion}, Estado:{_instancia_tarea.estado}") 
+        _resultado = "Tarea actualizada con exito"
+            
+    except Exception as e:
+        _log.error(f"Error al actualizar tarea. {str(e)}")
+        _resultado = f"Error al actualizar tarea. {str(e)}"
         return _resultado
 
     return _resultado

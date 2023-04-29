@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -8,13 +7,15 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib import messages
 
+from datetime import datetime
+
 import logging
 
 from challenge_tolist.settings import LOGIN_PAGE, LOGIN_OK
 from controllers import tolist_controller
 from tolist.models import *
 
-_log = logging.getLogger("admMedical")
+_log = logging.getLogger("tolist")
 
 
 # Create your views here.
@@ -30,7 +31,7 @@ def log_in(request):
 
         if not username or not password:
             messages.add_message(request, messages.ERROR, "Por favor complete todos los campos")
-            return HttpResponse(status=301)
+            return render (request , LOGIN_PAGE, context.flatten())
         else:
             
             try:
@@ -64,9 +65,7 @@ def log_in(request):
 def log_out(request):
     
     logout(request)
-    
-    context = RequestContext(request)
-    
+        
     messages.add_message(request, messages.SUCCESS, 'Sesión finalizada')
 
     return redirect("/proyect/")
@@ -96,6 +95,12 @@ def crear_cuenta(request):
         if _existe_email.__eq__(1):
             
             return HttpResponse(status=300)
+    
+        _existe_username = User.objects.filter(username = _nombre).count()
+
+        if _existe_username.__eq__(1):
+            
+            return HttpResponse(status=301)
                             
         try:
             
@@ -136,7 +141,7 @@ def cargar_tareas(request):
     try:
         user = request.user
         
-        _lst_tareas = Tareas.objects.filter(id_user = user.pk)
+        _lst_tareas = Tareas.objects.filter(id_user = user.pk).order_by('-estado')
         
         _fecha_hoy = datetime.today()
         
@@ -223,9 +228,13 @@ def eliminar_tarea(request):
     try:
         _pk_tarea = request.POST['pk']
         
-        _instancia_tarea = Tareas.objects.filter(pk = _pk_tarea)
+        _instancia_tarea = Tareas.objects.get(pk = _pk_tarea)
+        
+        _desc_tarea = _instancia_tarea.descripcion
         
         _instancia_tarea.delete()
+        
+        _log.info(f"Tarea eliminada con exito. {_desc_tarea}")
         
         return HttpResponse(status=200)
         
@@ -272,21 +281,19 @@ def modificar_tarea(request):
         return render (request, _pagina, _result)
         
     except Exception as e:
-        _log.error(f"Error al querer modificar la tarea. {str(e)}")
+        _log.error(f"Error al intentar modificar la tarea. {str(e)}")
         return HttpResponse(status=500)
+
 
 @login_required(login_url=LOGIN_PAGE)
 def finalizar_tarea(request):
             
     try:
         
-        _descripcion = request.POST['descripcion']
-        _prioridad = request.POST['prioridad']
-        _categoria = request.POST['categoria']
-        _fh_limite = request.POST['fechaLimite']
-        _user = request.user
+        _pk_tarea = request.POST['id_tarea']
+        _check = request.POST['check']
     
-        _result = tolist_controller.crear_tarea(_descripcion, _prioridad, _categoria, _fh_limite, _user)
+        _result = tolist_controller.actualizar_estado_tarea(_pk_tarea, _check)
         
         if _result.find("Error").__eq__(0):
             
@@ -297,5 +304,5 @@ def finalizar_tarea(request):
             return HttpResponse(status=200)
         
     except Exception as e:
-        _log.error(f"Error al crear tarea. {str(e)}")
+        _log.error(f"Error al actualizar el estado de la tarea. {str(e)}")
         return HttpResponse(status=500)

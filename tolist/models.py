@@ -41,5 +41,5 @@ class Tareas(models.Model):
         verbose_name = "Tarea"
         verbose_name_plural = "Tareas"
     
-    def _str_(self):
-        return '{}-{}'.format(self.descripcion)
+    def __str__(self):
+        return self.descripcion

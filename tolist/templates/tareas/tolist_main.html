@@ -11,11 +11,6 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                    
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
                         <div id="result_tabla_tareas">
                         </div>
                     </div>
@@ -293,20 +288,14 @@
         });
     }
 
-    function finalizarTarea()
+    function finalizarTarea(pk_tarea, check)
     {   
         let datos = {}
 
-        datos.id_tarea = $.map(tabla_tareas.rows('.selected').data(), function (item) 
-        { 
-            return item[0]; 
+        datos.id_tarea = pk_tarea
 
-        }).toString();
-
-        console.log(datos)
-
-        return false;
-
+        datos.check = check ? 1 : 0;
+        
         $.ajax({
             url: "{% url 'tolist:finalizar_tarea'%}",
             type: "post",
@@ -315,16 +304,22 @@
             data: datos,
             statusCode: {
                 200:function(data){
+                    
+                    toastr.info('Tarea actualizada.', 'Información', {timeOut: 2000});
 
-                    $('#result_filtros').html(data);
-                    $('#modalNuevaTarea').modal("show");
+                    datos = {}
 
                 },
                 500:function(){
-                toastr.error('Error al cargar filtros. Comunicarse con administrador.', 'Atención', {timeOut: 2000});
+                    toastr.error('Error al actualizar la tarea.', 'Atención', {timeOut: 2000});
                 }
             }
+        }).then(function () {
+
+            cargarTareas();
+
         });
+
     }
 
 </script>
