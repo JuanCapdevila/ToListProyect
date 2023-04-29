@@ -14,7 +14,7 @@ Para poder correr el proyecto de manera local, hay que seguir los siguientes pas
 Dirijirse a esta URL https://github.com/JuanCapdevila/ToListProyect, en el select "Code" de color verde, se puede hacer un git clone mediante la URL del proyecto
 o descargar el archivo .ZIP
 
-Una vez con la carpeta del proyecto en el sistema operativo, como **recomendacion** crear una carpeta en donde guardaremos el proyecto. Dentro de esta carpeta, se debe crear otra llamada "entorno", donde se creará el entorno virtual. Para crear el entorno virtual, abrimos la terminal en la ubicación de la carpeta "entorno" y ejecutamos el siguiente comando: 'python -m venv myvenv', donde 'myvenv' es el nombre que le daremos al entorno virtual. Es importante tener instalado virtualenv en el sistema operativo.
+Una vez con la carpeta del proyecto en el sistema operativo, como **recomendación** crear una carpeta en donde guardaremos el proyecto. Dentro de esta carpeta, se debe crear otra llamada "entorno", donde se creará el entorno virtual. Para crear el entorno virtual, abrimos la terminal en la ubicación de la carpeta "entorno" y ejecutamos el siguiente comando: 'python -m venv myvenv', donde 'myvenv' es el nombre que le daremos al entorno virtual. Es importante tener instalado virtualenv en el sistema operativo.
 
 Una vez creado el entorno virtual, volvemos un directorio atras y hacemos click secundario en la carpeta del proyecto y seleccionamos "Abrir con visual studio code"
 o el editor de codigo que utilice con frecuencia.
