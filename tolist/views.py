@@ -161,8 +161,10 @@ def cargar_filtros(request):
         
         _prioridades = Prioridades.objects.all()
         _categorias = Categorias.objects.all()
+        _accion = 'nuevo'
 
         _result = {
+            'accion': _accion,
             'categorias': _categorias,
             'prioridades': _prioridades
         }
@@ -176,6 +178,105 @@ def cargar_filtros(request):
     
 @login_required(login_url=LOGIN_PAGE)
 def crear_tarea(request):
+            
+    try:
+        _accion = request.POST['accion']
+        _descripcion = request.POST['descripcion']
+        _prioridad = request.POST['prioridad']
+        _categoria = request.POST['categoria']
+        _fh_limite = request.POST['fechaLimite']
+        _user = request.user
+        
+        if _accion.__eq__('nuevo'):
+    
+            _result = tolist_controller.crear_tarea(_descripcion, _prioridad, _categoria, _fh_limite, _user)
+            
+            if _result.find("Error").__eq__(0):
+                
+                return HttpResponse(status=500)
+            
+            else:
+
+                return HttpResponse(status=200)
+        
+        else:
+            
+            _pk = request.POST['pk']
+            
+            _result = tolist_controller.editar_tarea(_pk ,_descripcion, _prioridad, _categoria, _fh_limite)
+        
+            if _result.find("Error").__eq__(0):
+                
+                return HttpResponse(status=500)
+            
+            else:
+
+                return HttpResponse(status=200)
+        
+    except Exception as e:
+        _log.error(f"Error al crear tarea. {str(e)}")
+        return HttpResponse(status=500)
+    
+@login_required(login_url=LOGIN_PAGE)
+def eliminar_tarea(request):
+        
+    try:
+        _pk_tarea = request.POST['pk']
+        
+        _instancia_tarea = Tareas.objects.filter(pk = _pk_tarea)
+        
+        _instancia_tarea.delete()
+        
+        return HttpResponse(status=200)
+        
+    except Exception as e:
+        _log.error(f"Error al eliminar la tarea. {str(e)}")
+        return HttpResponse(status=500)
+
+
+@login_required(login_url=LOGIN_PAGE)
+def modificar_tarea(request):
+    
+    _pagina = 'tareas/_inputs.html'
+        
+    try:
+        _pk_tarea = request.POST['pk']
+        
+        _accion = 'editar'
+                
+        _prioridades = Prioridades.objects.all()
+        _categorias = Categorias.objects.all()
+        
+        _instancia_tarea = Tareas.objects.get(pk = _pk_tarea)
+        
+        try:
+            
+            _fh_str = str(_instancia_tarea.fecha_limite).split(' ')
+            _fh_format = _fh_str[0]
+            
+        except:
+            
+            _fh_str = None
+            _fh_format = None
+        
+        _result = {
+            'accion': _accion,
+            'categorias': _categorias,
+            'prioridades': _prioridades,
+            'pk_prioridad': _instancia_tarea.id_prioridad.pk,
+            'pk_categoria': _instancia_tarea.id_categoria.pk,
+            'descripcion': _instancia_tarea.descripcion,
+            'fecha_limite': _fh_format
+        }
+        
+        return render (request, _pagina, _result)
+        
+    except Exception as e:
+        _log.error(f"Error al querer modificar la tarea. {str(e)}")
+        return HttpResponse(status=500)
+
+@login_required(login_url=LOGIN_PAGE)
+def finalizar_tarea(request):
             
     try:
         

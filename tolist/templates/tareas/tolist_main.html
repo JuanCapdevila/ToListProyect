@@ -33,9 +33,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <p class="modal-title">
-           <b> Crear tarea nueva </b>
-          </p>
+          <p class="modal-title" id="tituloNuevoEditar"><b> </b> </p>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -54,6 +52,27 @@
     </div>
 </div>
 
+<div class="modal" id="modalEliminarTarea">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="modal-title">Eliminar Tarea</p>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+                <div id="preguntaEliminarTarea"></div>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-secondary pull-left" onclick="cerrarModalEliminacion()">Cancelar</button>
+          <button type="button" class="btn btn-primary pull-rigth" onclick="eliminarTarea()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+</div>
+
 
 <script>
 
@@ -61,6 +80,9 @@
 
         cargarTareas();
     });
+
+    var datos_eliminar = {}
+    var datos_modif = {}
 
     function cargarTareas()
     {
@@ -71,7 +93,7 @@
             datatype: 'json',
             statusCode: {
                 200:function(data){
-                    console.log(data)
+
                     $('#result_tabla_tareas').html(data);
 
                 },
@@ -84,6 +106,8 @@
 
     function agregarTarea()
     {
+        datos_modif.accion = "nuevo";
+
         $.ajax({
             url: "{% url 'tolist:cargar_filtros'%}",
             type: "post",
@@ -93,6 +117,9 @@
                 200:function(data){
 
                     $('#result_filtros').html(data);
+
+                    $('#tituloNuevoEditar').text('Crear nueva tarea');
+
                     $('#modalNuevaTarea').modal("show");
 
                 },
@@ -110,43 +137,194 @@
 
     function crearTarea()
     {
-        let datos = {}
 
-        datos.descripcion = $('#txtDescripcion').val();
-        datos.prioridad = $('#lstPrioridades').val();
-        datos.categoria = $('#lstCategoria').val(); 
-        datos.fechaLimite = $('#txtFechaLimite').val();
-
-        if (datos.descripcion && datos.prioridad && datos.categoria)
+        if(datos_modif.accion == 'nuevo')
         {
-            $.ajax({
-                url: "{% url 'tolist:crear_tarea'%}",
-                type: "post",
-                headers: {'X-CSRFToken':'{{ csrf_token}}'},
-                datatype: 'json',
-                data:datos,
-                statusCode: {
-                    200:function(data){
+            let datos = {}
 
-                        $('#modalNuevaTarea').modal("hide");
-
-                        toastr.success('Tarea creada correctamente', 'Éxito', {timeOut: 2000});
+            datos.descripcion = $('#txtDescripcion').val();
+            datos.prioridad = $('#lstPrioridades').val();
+            datos.categoria = $('#lstCategoria').val(); 
+            datos.fechaLimite = $('#txtFechaLimite').val();
+            datos.accion = "nuevo";
+            
+            if (datos.descripcion && datos.prioridad && datos.categoria)
+            {
+                $.ajax({
+                    url: "{% url 'tolist:crear_tarea'%}",
+                    type: "post",
+                    headers: {'X-CSRFToken':'{{ csrf_token}}'},
+                    datatype: 'json',
+                    data:datos,
+                    statusCode: {
+                        200:function(data){
     
-                    },
-                    500:function(){
-                    toastr.error('Error al crear tarea. Comunicarse con un administrador', 'Atención', {timeOut: 2000});
+                            $('#modalNuevaTarea').modal("hide");
+    
+                            toastr.success('Tarea creada correctamente', 'Éxito', {timeOut: 2000});
+
+                            datos_modif = {}
+        
+                        },
+                        500:function(){
+                        toastr.error('Error al crear tarea. Comunicarse con un administrador', 'Atención', {timeOut: 2000});
+                        }
                     }
-                }
-            }).then(function () {
-
-                cargarTareas();
-
-            });
+                }).then(function () {
+    
+                    cargarTareas();
+    
+                });
+            }
+            else
+            {
+                toastr.info('Por favor complete todos los campos', 'Atención', {timeOut: 2000});
+            }
         }
         else
         {
-            toastr.info('Por favor complete todos los campos', 'Atención', {timeOut: 2000});
+            datos_modif.descripcion = $('#txtDescripcion').val();
+            datos_modif.prioridad = $('#lstPrioridades').val();
+            datos_modif.categoria = $('#lstCategoria').val(); 
+            datos_modif.fechaLimite = $('#txtFechaLimite').val();
+    
+            if (datos_modif.descripcion && datos_modif.prioridad && datos_modif.categoria)
+            {
+                $.ajax({
+                    url: "{% url 'tolist:crear_tarea'%}",
+                    type: "post",
+                    headers: {'X-CSRFToken':'{{ csrf_token}}'},
+                    datatype: 'json',
+                    data:datos_modif,
+                    statusCode: {
+                        200:function(data){
+    
+                            $('#modalNuevaTarea').modal("hide");
+    
+                            toastr.success('Tarea modificada correctamente', 'Éxito', {timeOut: 2000});
+
+                            datos_modif = {}
+        
+                        },
+                        500:function(){
+                        toastr.error('Error al guardar la tarea. Comunicarse con un administrador', 'Atención', {timeOut: 2000});
+                        }
+                    }
+                }).then(function () {
+    
+                    cargarTareas();
+    
+                });
+            }
+            else
+            {
+                toastr.info('Por favor complete todos los campos', 'Atención', {timeOut: 2000});
+            }
         }
+
+    }
+
+    function preguntaEliminar(pk_tarea, descripcion)
+    {
+        datos_eliminar.pk = pk_tarea
+
+        $('#preguntaEliminarTarea').html('¿Está seguro que desea eliminar la tarea? <br> <strong>' + descripcion + '</strong>');
+
+        $('#modalEliminarTarea').modal('show');
+    }
+
+    function cerrarModalEliminacion()
+    {
+        $('#modalEliminarTarea').modal("hide");
+    }
+
+    function eliminarTarea()
+    {
+        $.ajax({
+            url: "{% url 'tolist:eliminar_tarea'%}",
+            type: "post",
+            headers: {'X-CSRFToken':'{{ csrf_token}}'},
+            datatype: 'json',
+            data: datos_eliminar,
+            statusCode: {
+                200:function(data){
+
+                    toastr.success('Tarea eliminada correctamente.', 'Éxito', {timeOut: 2000});
+
+                    $('#modalEliminarTarea').modal("hide");
+
+                },
+                500:function(){
+                toastr.error('Error al eliminar la tarea. Comunicarse con administrador.', 'Atención', {timeOut: 2000});
+                }
+            }
+        }).then(function () {
+
+            cargarTareas();
+
+        });
+    }
+
+    function editarTarea(pk_tarea)
+    {
+        datos_modif.accion = 'editar';
+        datos_modif.pk = pk_tarea
+
+        $.ajax({
+            url: "{% url 'tolist:modificar_tarea'%}",
+            type: "post",
+            headers: {'X-CSRFToken':'{{ csrf_token}}'},
+            datatype: 'json',
+            data:{'pk': pk_tarea},
+            statusCode: {
+                200:function(data){
+
+                    $('#result_filtros').html(data);
+
+                    $('#tituloNuevoEditar').text('Modificar tarea');
+
+                    $('#modalNuevaTarea').modal("show");
+
+                },
+                500:function(){
+                toastr.error('Error al intentar editar. Comunicarse con administrador.', 'Atención', {timeOut: 2000});
+                }
+            }
+        });
+    }
+
+    function finalizarTarea()
+    {   
+        let datos = {}
+
+        datos.id_tarea = $.map(tabla_tareas.rows('.selected').data(), function (item) 
+        { 
+            return item[0]; 
+
+        }).toString();
+
+        console.log(datos)
+
+        return false;
+
+        $.ajax({
+            url: "{% url 'tolist:finalizar_tarea'%}",
+            type: "post",
+            headers: {'X-CSRFToken':'{{ csrf_token}}'},
+            datatype: 'json',
+            data: datos,
+            statusCode: {
+                200:function(data){
+
+                    $('#result_filtros').html(data);
+                    $('#modalNuevaTarea').modal("show");
+
+                },
+                500:function(){
+                toastr.error('Error al cargar filtros. Comunicarse con administrador.', 'Atención', {timeOut: 2000});
+                }
+            }
+        });
     }
 
 </script>

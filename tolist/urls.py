@@ -14,10 +14,13 @@ urlpatterns = [
     
     path('crear_cuenta/', views.crear_cuenta, name="crear_cuenta"),
     
-    #ToList 
+    #ToList  
     path('tolist/tareas_main/', views.tareas_main, name="tareas_main"),
     path('tolist/cargar_tareas/', views.cargar_tareas, name="cargar_tareas"),
     path('tolist/cargar_filtros/', views.cargar_filtros, name="cargar_filtros"),
     path('tolist/crear_tarea/', views.crear_tarea, name="crear_tarea"),
+    path('tolist/eliminar_tarea/', views.eliminar_tarea, name="eliminar_tarea"),
+    path('tolist/modificar_tarea/', views.modificar_tarea, name="modificar_tarea"),
+    path('tolist/finalizar_tarea/', views.finalizar_tarea, name="finalizar_tarea"),
 
 ]

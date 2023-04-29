@@ -1,4 +1,5 @@
 <section class="content">
+    {% if accion == 'nuevo' %}
     <div class="row mb-2">
         <div class="row">
             <div class="col-md-12">
@@ -41,4 +42,56 @@
             </div>
         </div>
     </div>
+    {% else %}
+    <div class="row mb-2">
+        <div class="row">
+            <div class="col-md-12">
+                <label for="">Descripción*</label>
+                <textarea id="txtDescripcion" name="textarea" class="form-control" rows="5" cols="50" style="resize: none;">{{descripcion}}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <div class="form-group">
+                    <label for="">Prioridad*</label>
+                    <select class="form-control" id="lstPrioridades">
+                    <option value="">Seleccionar Prioridad</option>
+                    {% for p in prioridades %}
+                        {% if p.pk == pk_prioridad %}
+                        <option value="{{p.pk}}" selected >{{p.descripcion}}</option>
+                        {% else %}
+                        <option value="{{p.pk}}" >{{p.descripcion}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="form-group">
+                    <label for="">Categoria*</label>
+                    <select class="form-control" id="lstCategoria">
+                        <option value="">Seleccionar Categoria</option>
+                        {% for c in categorias %}
+                            {% if c.pk == pk_categoria %}
+                            <option value="{{c.pk}}" selected >{{c.descripcion}}</option>
+                            {% else %}
+                            <option value="{{c.pk}}">{{c.descripcion}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="">Fecha Limite</label>
+                    <input class="form-control" type="date" id="txtFechaLimite" value="{{fecha_limite}}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </section>

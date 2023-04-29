@@ -1,12 +1,5 @@
 {% load i18n %}
 
-<style>
-  #tabla_tareas tbody tr.selected {
-      color: white;
-      background-color: #B1BFBF;
-  }
-</style>
-
 <section class="content">
   <table id="tabla_tareas" class="table table-bordered"  style="width:100%">
       <thead>
@@ -18,6 +11,8 @@
             <th>Tarea</th>
             <th>Categoria</th>
             <th>Fecha Limite</th>
+            <th>Modificar</th>
+            <th>Eliminar</th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +31,8 @@
                     {% endif %}
                     <td>{{t.id_categoria.descripcion}}</td>
                     <td>{{t.fecha_limite|date:'d/m/Y'|default_if_none:'-'}}</td>
+                    <td class="text-center"><i class="fa-solid fa-pencil"></i></td>
+                    <td class="text-center"><i class="fa-solid fa-trash"></i></td>
                 </tr>
         {% endfor %}
       </tbody>
@@ -73,6 +70,22 @@
           pagination.show();
         }
       }
+  });
+
+  $('#tabla_tareas tbody').on( 'click', 'td', function () {  // CUANDO HACEMOS CLICK EN LA TABLA
+
+    var rowIdx = tabla_tareas.cell( this ).index().row;
+    var colIdx = tabla_tareas.cell(this).index().column;
+    var pk_tarea = tabla_tareas.rows( rowIdx ).data()[0][1] ;
+    var descripcion = tabla_tareas.rows( rowIdx ).data()[0][3] ;
+    
+    if(colIdx==7){ 
+        editarTarea(pk_tarea);
+    }
+    else if(colIdx==8){ 
+        preguntaEliminar(pk_tarea, descripcion);
+    }
+
   });
         
 </script>
