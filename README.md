@@ -3,7 +3,7 @@
 **Python Challenge de Chaindots - To Do List**
 
 **Descripción** <br>
-Se ha desarrollado una aplicación To-Do List para que los usuarios puedan gestionar sus tareas pendientes. La aplicación permite agregar nuevas tareas, especificando su categoría, prioridad y, si es necesario, una fecha límite. También se pueden modificar, eliminar y actualizar el estado (finalizado) de las tareas existentes.
+Se desarrollo una aplicación To-Do List para que los usuarios puedan gestionar sus tareas pendientes. La aplicación permite agregar nuevas tareas, especificando su categoría, prioridad y, si es necesario, una fecha límite. También se pueden modificar, eliminar y actualizar el estado (finalizado) de las tareas existentes.
 
 **Requisitos previos** <br>
 Los requisitos para el proyecto son tener un navegador web como Google Chrome y tener instalado Python en el sistema operativo. El proyecto fue desarrollado utilizando Python 3.11.2, aunque se puede utilizar otra versión siempre y cuando sea compatible con la versión de Django==4.2.
@@ -31,7 +31,7 @@ ToListProyect <br>
 .manage.py <br>
 .requerimientos.txt  <br>
 
-Abrimos una terminal, volvemos un directorio atras, entramos a la carpeta enotrno y ejecutamos el siguiente comando para ACTIVAR nuestro entorno virtual
+Abrimos una terminal, volvemos un directorio atras, entramos a la carpeta entorno y ejecutamos el siguiente comando para ACTIVAR nuestro entorno virtual
 "myvenv\Scripts\activate" te das cuenta que el entorno esta activo cuando delante del path de la terminal se visualiza entre parentesis y de color (nombre_entorno)
 
 Una vez con el entorno activado, volvemos al path del proyecto hasta quedar con la estructura mencionada anteriormente
