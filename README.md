@@ -53,7 +53,7 @@ sino se puede levantar el modo debug mediante un archivo launch.json
 Se creará un carpeta en el directorio C:\\ para el almacenado de logs. Con una estructura de una carpeta para cada mes por año [formato AAAAMM] y dentro
 un archivo .txt en donde se graban los logs, con una estructura de "ToList_{numero_del_mes}_log.txt"
 
-El proyecto esta corriendo una vez que se visualice en la consola lo siguiente <br>
+El proyecto esta corriendo una vez que se presente en la consola lo siguiente <br>
 
 Watching for file changes with StatReloader <br>
 Performing system checks... <br>
@@ -64,7 +64,7 @@ Django version 4.2, using settings 'challenge_tolist.settings' <br>
 Starting development server at http://127.0.0.1:8000/ <br>
 Quit the server with CTRL-BREAK. <br>
 
-Ingresando a la URL indicada **AGREGANDO AL PATH /proyect** se visualizará el login. De manera que quedaría asi el path **http://127.0.0.1:8000/proyect**
+Ingresando a la URL indicada **AGREGANDO AL PATH /proyect** se visualizará el login. Quedando asi **http://127.0.0.1:8000/proyect**
 
 Y de esta forma se puede crear una cuenta para poder loguearse en el sistema y comenzar a utilizarlo. <br>
 **Recomendacion** en caso de tener problemas con archivos static, realizar un CTRL+FN+F5 para actualizar el cache del navegador, y si el problema persiste, revisar el path indicado para los static en el archivo settings.py.
